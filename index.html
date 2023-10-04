@@ -48,11 +48,7 @@
           "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen",
           "Zambia", "Zimbabwe"
          ];
-        
-
-
-
-
+      
 
       </script>
 
@@ -60,28 +56,47 @@
     
 
     <p id = 'graph1'>
-      <div>
+
         <svg id = 'student-teacher' width = 500 height = 500></svg>
-      </div>
-      
-      <script>
 
-        //student_teacher_ratio
-        d3.csv('data/student_teacher_ratio.csv', d3.autoType).then((data) =>{
+        <script>
 
-          //some rows don't actually have countries -- they have stuff like
-          //high-income areas or developing countries, or categories like Sub-saharan Africa. We wanted to get rid of them by
-          //checking if each country in this list was actually a country in our reference list.
-          data = data.filter(function(d){
-            return countries.includes(d.country);
-          })
+          //setting up the svg
+          const svg = d3.select('svg#student-teacher');
+          const width = svg.attr('width');
+          const height = svg.attr('heigiht');
+          const margin = {top: 10, right: 10, bottom: 50, left: 50};
+          const chartWidth = width - margin.left - margin.right;
+          const chartheight = height - margin.top - margin.bottom;
 
-          //GRAPH 1 TODO
+          //creating annotations and chartArea groups
+          let annotations = svg.append('g').attr('id', 'annotations');
+          let chartArea = svg.append('g').attr('id', 'points')
+                              .attr('transform', 'translate('+margin.left+', '+margin.top+')');
 
-        })
 
-      </script>
-      
+          //setting up the data with promise
+          d3.csv('data/student_teacher_ratio.csv', d3.autoType).then((data) =>{
+
+            //some rows don't actually have countries -- they have stuff like
+            //high-income areas or developing countries, or categories like Sub-saharan Africa. We wanted to get rid of them by
+            //checking if each country in this list was actually a country in our reference list.
+            data = data.filter(function(d){
+              return countries.includes(d.country);
+            })
+
+
+            //setting up scales
+            const yearExtent = d3.extent(data, d=> d['year']);
+            const yearScale = d3.scaleLinear.domain(yearExtent).range(chartHeight, 0);
+            
+            const ratioExtent = d3.extent(data, d => d['student_ratio']);
+            const ratioScale = d3.scaleLinear().domain([ratioExtent]).range(0, chartWidth);
+            console.log(ratioExtent);
+             })
+
+
+        </script>
     </p>
 
     <p id = 'graph2'>
@@ -96,6 +111,7 @@
         d3.csv('data/education_index_1.csv', d3.autoType).then((data) => {
                
             //GRAPH 2 TODO
+
 
         })
 
